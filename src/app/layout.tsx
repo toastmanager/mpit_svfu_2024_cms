@@ -74,6 +74,16 @@ export default function RootLayout({
                           canDelete: true,
                         },
                       },
+                      {
+                        name: "reviews",
+                        list: "/reviews",
+                        create: "/reviews/create",
+                        edit: "/reviews/edit/:id",
+                        show: "/reviews/show/:id",
+                        meta: {
+                          canDelete: true,
+                        },
+                      },
                     ]}
                     options={{
                       syncWithLocation: true,

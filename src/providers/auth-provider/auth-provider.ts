@@ -1,33 +1,23 @@
 "use client";
-
+import api from "@lib/api-client";
 import type { AuthProvider } from "@refinedev/core";
 import Cookies from "js-cookie";
 
-const mockUsers = [
-  {
-    name: "John Doe",
-    email: "johndoe@mail.com",
-    roles: ["admin"],
-    avatar: "https://i.pravatar.cc/150?img=1",
-  },
-  {
-    name: "Jane Doe",
-    email: "janedoe@mail.com",
-    roles: ["editor"],
-    avatar: "https://i.pravatar.cc/150?img=1",
-  },
-];
-
 export const authProvider: AuthProvider = {
   login: async ({ email, username, password, remember }) => {
-    // Suppose we actually send a request to the back end here.
-    const user = mockUsers[0];
+    const token = (await api.post("auth/login", { email, password })).data;
+    const user = await api.get("auth/me", {
+      headers: {
+        Authorization: `Bearer ${token.access_token}`,
+      },
+    });
 
     if (user) {
       Cookies.set("auth", JSON.stringify(user), {
         expires: 30, // 30 days
         path: "/",
       });
+      localStorage.setItem("access_token", token.access_token);
       return {
         success: true,
         redirectTo: "/",
@@ -50,6 +40,8 @@ export const authProvider: AuthProvider = {
     };
   },
   check: async () => {
+    console.log("AUTH CHECK");
+
     const auth = Cookies.get("auth");
     if (auth) {
       return {
@@ -72,6 +64,7 @@ export const authProvider: AuthProvider = {
     return null;
   },
   getIdentity: async () => {
+    console.log("AUTH GET IDENTITY");
     const auth = Cookies.get("auth");
     if (auth) {
       const parsedUser = JSON.parse(auth);
@@ -80,7 +73,24 @@ export const authProvider: AuthProvider = {
     return null;
   },
   onError: async (error) => {
-    if (error.response?.status === 401) {
+    console.log(`AUTH ERROR: ${error.response?.status}`);
+    console.log(error);
+
+    if (error.statusCode === 401) {
+      const token = (await api.post("auth/refresh")).data;
+      const user = await api.get("auth/me", {
+        headers: {
+          Authorization: `Bearer ${token.access_token}`,
+        },
+      });
+
+      if (user) {
+        localStorage.setItem('access_token', token.access_token)
+        return {
+          logout: false
+        };
+      }
+      
       return {
         logout: true,
       };
