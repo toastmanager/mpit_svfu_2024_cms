@@ -6,6 +6,9 @@ import Cookies from "js-cookie";
 export const authProvider: AuthProvider = {
   login: async ({ email, username, password, remember }) => {
     const token = (await api.post("auth/login", { email, password })).data;
+    console.log('--------')
+    console.log(token.access_token)
+    console.log('--------')
     const user = await api.post(
       "auth/me",
       {},
@@ -37,7 +40,9 @@ export const authProvider: AuthProvider = {
     };
   },
   logout: async () => {
+    await api.post('auth/logout')
     Cookies.remove("auth", { path: "/" });
+    localStorage.removeItem("accessToken")
     return {
       success: true,
       redirectTo: "/login",

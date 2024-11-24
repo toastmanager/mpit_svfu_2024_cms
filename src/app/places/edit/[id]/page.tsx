@@ -1,13 +1,15 @@
 "use client";
 
-import { Create, useForm } from "@refinedev/antd";
-import { Form, Input } from "antd";
+import { Edit, useForm, useSelect } from "@refinedev/antd";
+import { Form, Input, Select } from "antd";
 
-export default function UserCreate() {
-  const { formProps, saveButtonProps } = useForm({});
+export default function UserEdit() {
+  const { formProps, saveButtonProps, queryResult } = useForm({});
+
+  const blogPostsData = queryResult?.data?.data;
 
   return (
-    <Create saveButtonProps={saveButtonProps}>
+    <Edit saveButtonProps={saveButtonProps}>
       <Form {...formProps} layout="vertical">
         <Form.Item
           label={"Fullname"}
@@ -22,18 +24,7 @@ export default function UserCreate() {
         </Form.Item>
         <Form.Item
           label={"Email"}
-          name={["email"]}
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label={"Password"}
-          name={["password"]}
+          name="email"
           rules={[
             {
               required: true,
@@ -43,6 +34,6 @@ export default function UserCreate() {
           <Input />
         </Form.Item>
       </Form>
-    </Create>
+    </Edit>
   );
 }

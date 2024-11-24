@@ -55,6 +55,16 @@ export default function RootLayout({
                         },
                       },
                       {
+                        name: "places",
+                        list: "/places",
+                        create: "/places/create",
+                        edit: "/places/edit/:id",
+                        show: "/places/show/:id",
+                        meta: {
+                          canDelete: true,
+                        },
+                      },
+                      {
                         name: "reviews",
                         list: "/reviews",
                         create: "/reviews/create",
