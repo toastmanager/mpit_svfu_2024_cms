@@ -37,8 +37,10 @@ export default function ReviewShow() {
       <TextField value={record?.score} />
       <Title level={5}>{"Текст отзыва"}</Title>
       <TextField value={record?.text} />
+      <Title level={5}>{"Регион"}</Title>
+      <TextField value={record?.place?.region} />
       <Title level={5}>{"Место"}</Title>
-      <TextField value={record?.place?.id} />
+      <TextField value={record?.place?.address} />
       <Title level={5}>{"Автор"}</Title>
       <TextField value={
           authorIsLoading ? <>Loading...</> : <>{authorData?.data?.fullname}</>

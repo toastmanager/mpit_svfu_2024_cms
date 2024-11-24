@@ -6,11 +6,15 @@ import Cookies from "js-cookie";
 export const authProvider: AuthProvider = {
   login: async ({ email, username, password, remember }) => {
     const token = (await api.post("auth/login", { email, password })).data;
-    const user = await api.get("auth/me", {
-      headers: {
-        Authorization: `Bearer ${token.access_token}`,
-      },
-    });
+    const user = await api.post(
+      "auth/me",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token.access_token}`,
+        },
+      }
+    );
 
     if (user) {
       Cookies.set("auth", JSON.stringify(user), {
@@ -85,12 +89,12 @@ export const authProvider: AuthProvider = {
       });
 
       if (user) {
-        localStorage.setItem('access_token', token.access_token)
+        localStorage.setItem("access_token", token.access_token);
         return {
-          logout: false
+          logout: false,
         };
       }
-      
+
       return {
         logout: true,
       };
